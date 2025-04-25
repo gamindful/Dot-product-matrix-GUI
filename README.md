@@ -1,2 +1,2 @@
-# Dot-product-matrix-GUI
- Functions for MATLAB to analyze and visualize clusters from dot product
+# ensemble_analysis
+Set of functions built in Matlab for launching GUI for analysis of neuronal ensembles.
