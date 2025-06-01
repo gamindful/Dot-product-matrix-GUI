@@ -1,4 +1,4 @@
-%%% The present 
+%%% The present
 
 function varargout = DimReduct(varargin)
 
@@ -30,11 +30,11 @@ function varargout = DimReduct(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @DimReduct_OpeningFcn, ...
-                   'gui_OutputFcn',  @DimReduct_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @DimReduct_OpeningFcn, ...
+    'gui_OutputFcn',  @DimReduct_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -62,11 +62,11 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes DimReduct wait for user response (see UIRESUME)
- uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = DimReduct_OutputFcn(hObject, eventdata, handles) 
+function varargout = DimReduct_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -83,10 +83,15 @@ function SelectMatrix_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[matrix]= uigetfile;
-matrix=open(matrix);
-fnms=fieldnames(matrix);
-matrix=matrix.(fnms{1});
+[mtx]= uigetfile;
+matrix=load(mtx);
+try
+    fnms=fieldnames(matrix);
+    matrix=matrix.(fnms{1});
+catch
+    matrix=matrix;
+end
+matrix(isnan(matrix))=1e-10;
 matrix=matrix';
 handles.output=matrix;
 assignin('base','matrix',handles.output)
@@ -104,38 +109,43 @@ uiresume(handles.figure1)
 %%%     Calls the t-Distributed Stochastic Neighbor Embedding
 
 function pushbutton6_Callback(hObject, eventdata, handles)
-    matrix=evalin('base','matrix');
-    [mappedX] = tsne(matrix);
-    assignin('base','mappedX',mappedX);
-    % hObject    handle to pushbutton6 (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
+matrix=evalin('base','matrix');
+[mappedX] = tsne(matrix);
+assignin('base','mappedX',mappedX);
+uiresume(handles.figure1)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
 
 %%%     Calls the routine for the ISOMAP analysis
 
 function pushbutton3_Callback(hObject, eventdata, handles)
-    matrix=evalin('base','matrix');
-    [mappedX, mapping] = isomap(matrix, 2, []);
-    assignin('base','mappedX',mappedX);
+matrix=evalin('base','matrix');
+[mappedX, mapping] = isomap(matrix, 2, []);
+assignin('base','mappedX',mappedX);
+uiresume(handles.figure1)
 
 %%%        Calls the routine for the linkage/cluster/dendrogram
 function pushbutton4_Callback(hObject, eventdata, handles)
-    mappedX=evalin('base','mappedX');
-    cluster_linkage(mappedX)
-    
-    
+mappedX=evalin('base','mappedX');
+cluster_linkage(mappedX)
+uiresume(handles.figure1)
+
+
 %%%        Calls the routine for the K-Means analysis
 function pushbutton5_Callback(hObject, eventdata, handles)
-    mappedX=evalin('base','mappedX');
-    Kmeans(mappedX)
-    
+mappedX=evalin('base','mappedX');
+Kmeans(mappedX)
+uiresume(handles.figure1)
 
-    
+
+
 %%%        Calls the routine for plotting the clusters in GUI
 
 function pushbutton1_Callback(hObject, eventdata, handles)
-    mappedX=evalin('base','mappedX');
-    idx=evalin('base','idx');
-    cluster_figure(mappedX,idx)
-    
+mappedX=evalin('base','mappedX');
+idx=evalin('base','idx');
+cluster_figure(mappedX,idx)
+uiresume(handles.figure1)
+

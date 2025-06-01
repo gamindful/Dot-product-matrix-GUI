@@ -14,7 +14,7 @@ function cluster_figure(mappedX,idx)
     colores= [.5 1 .5;1 0 0;0 0 1];%[75 0 130; 32 178 170]./255;
     for n=1:size(mappedX,1)
         plot(mappedX(n,1),mappedX(n,2),'.'...
-            ,'color',colores(idx(n),:))
+            ,'color',colores(idx(n),:),'Markersize',20)
     end
     disp('Done!')
     
